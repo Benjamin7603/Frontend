@@ -1,0 +1,109 @@
+/* src/styles/Admin.css */
+.admin-panel {
+  display: flex;
+  min-height: 80vh; /* Ajusta según tu layout */
+}
+
+.admin-sidebar {
+  width: 240px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.admin-sidebar h3 {
+  margin-top: 0;
+}
+
+.admin-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-sidebar li {
+  margin-bottom: 10px;
+}
+
+.admin-sidebar button {
+  width: 100%;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.admin-sidebar button:hover {
+  background-color: #e9e9e9;
+}
+
+.admin-sidebar button.active {
+  background-color: #0d6efd; /* Color de Bootstrap 'primary' */
+  color: white;
+  border-color: #0d6efd;
+}
+
+.admin-content {
+  flex-grow: 1; /* Ocupa el resto del espacio */
+  padding: 20px;
+}
+
+/* Estilos para las tablas (opcional pero recomendado) */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.admin-table th {
+  background-color: #f2f2f2;
+}
+
+.admin-table img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.admin-table .actions button {
+  margin-right: 5px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
