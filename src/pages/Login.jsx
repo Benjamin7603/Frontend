@@ -1,98 +1,92 @@
 import React, { useState } from 'react';
+import { loginUser } from '../services/userService';
 import '../styles/Login.css';
 
-const Login = ({ onPageChange }) => {
+const Login = ({ onPageChange, onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleAdminLogin = (email, password) => {
-    // Credenciales de administrador
-    const adminCredentials = [
-      { email: 'admin@techstore.com', password: 'admin123' },
-      { email: 'admin2@techstore.com', password: 'admin456' }
-    ];
-
-    const isValidAdmin = adminCredentials.some(
-      cred => cred.email === email && cred.password === password
-    );
-
-    if (isValidAdmin) {
-      localStorage.setItem('admin-token', 'admin-authenticated');
-      onPageChange('admin');
-      return true;
-    }
-    return false;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Primero intentar login como admin
-    if (handleAdminLogin(email, password)) {
+    // 1. INTENTO DE ADMIN (Hardcodeado por seguridad o facilidad)
+    if (email === 'admin@techstore.com' && password === 'admin123') {
+      const adminUser = { name: 'Administrador', email: email, role: 'admin' };
+      onLogin(adminUser); // Avisamos a App.js
       return;
     }
 
-    // Si no es admin, mostrar error
-    setError('Credenciales incorrectas. Intente nuevamente.');
+    // 2. INTENTO DE USUARIO NORMAL (Consulta a Java)
+    try {
+      const userFound = await loginUser(email, password);
+
+      if (userFound) {
+        onLogin(userFound); // ¡Éxito! Entra el cliente
+      } else {
+        setError('Credenciales incorrectas o usuario no registrado.');
+      }
+    } catch (err) {
+      setError('Error de conexión con el servidor.');
+    }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-form">
-        <h2>Iniciar Sesión</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="password">Contraseña:</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+      <div className="login-container">
+        <div className="login-form">
+          <h2>Iniciar Sesión</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email:</label>
+              <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+              />
+            </div>
 
-          {error && <div className="error-message">{error}</div>}
+            <div className="form-group">
+              <label htmlFor="password">Contraseña:</label>
+              <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+              />
+            </div>
 
-          <button type="submit" className="login-btn">
-            Iniciar Sesión
-          </button>
-        </form>
+            {error && <div className="error-message" style={{color: 'red', marginBottom:'10px'}}>{error}</div>}
 
-        <div className="login-links">
-          <p>
-            ¿No tienes cuenta?{' '}
-            <span 
-              className="link" 
-              onClick={() => onPageChange('registro')}
-            >
+            <button type="submit" className="login-btn">
+              Iniciar Sesión
+            </button>
+          </form>
+
+          <div className="login-links">
+            <p>
+              ¿No tienes cuenta?{' '}
+              <span
+                  className="link"
+                  onClick={() => onPageChange('registro')}
+              >
               Regístrate aquí
             </span>
-          </p>
-          <p>
-            <span 
-              className="link" 
-              onClick={() => onPageChange('inicio')}
+            </p>
+            <p>
+            <span
+                className="link"
+                onClick={() => onPageChange('inicio')}
             >
               Volver al inicio
             </span>
-          </p>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

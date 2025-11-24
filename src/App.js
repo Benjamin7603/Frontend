@@ -5,6 +5,7 @@ import CartPanel from './components/Cart/CartPanel';
 import ProductDetail from './components/Products/ProductDetail';
 import BlogDetail from './components/Blog/BlogDetail';
 
+// Importar páginas
 import Home from './pages/Home';
 import Products from './pages/Products';
 import About from './pages/About';
@@ -12,22 +13,25 @@ import Blogs from './pages/Blogs';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Admin from './pages/Admin'; 
+import Admin from './pages/Admin';
 
+// Importar datos locales (si se usan de respaldo)
 import { products, blogPosts } from './data/products';
 
 import './styles/App.css';
 
 function App() {
-    console.log('Productos cargados:', products);
-    console.log('Blogs cargados:', blogPosts);
-
-    const [currentPage, setCurrentPage] = useState('productos'); // Tu estado
+    // ESTADOS
+    const [currentPage, setCurrentPage] = useState('inicio');
     const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedBlog, setSelectedBlog] = useState(null);
 
+    // ESTADO NUEVO: Usuario Logueado (null = nadie)
+    const [currentUser, setCurrentUser] = useState(null);
+
+    // --- FUNCIONES DE CARRITO ---
     const addToCart = (id, name, price) => {
         setCart(prevCart => {
             const existingItem = prevCart.find(item => item.id === id);
@@ -42,122 +46,95 @@ function App() {
     const removeFromCart = (id) => {
         setCart(prevCart => prevCart.filter(item => item.id !== id));
     };
-    const clearCart = () => {
-        setCart([]);
-    };
+    const clearCart = () => setCart([]);
+    const cartCount = cart.reduce((count, item) => count + item.quantity, 0);
+    const handleCartToggle = () => setIsCartOpen(!isCartOpen);
+    const handleCloseCart = () => setIsCartOpen(false);
 
+    // --- NAVEGACIÓN ---
     const handlePageChange = (page) => {
-        console.log('Cambiando a página:', page);
         setCurrentPage(page);
-        setSelectedProduct(null);
-        setSelectedBlog(null);
-        setIsCartOpen(false);
+        if (page !== 'product-detail') setSelectedProduct(null);
+        if (page !== 'blog-detail') setSelectedBlog(null);
     };
-    const handleProductClick = (productId) => {
-        console.log('Producto clickeado:', productId);
-        if (productId === 'productos') {
-            setCurrentPage('productos');
+
+    const handleProductClick = (product) => {
+        setSelectedProduct(product);
+        setCurrentPage('product-detail');
+    };
+
+    const handleBlogClick = (blog) => {
+        setSelectedBlog(blog);
+        setCurrentPage('blog-detail');
+    };
+
+    // --- LOGIN / LOGOUT ---
+    const handleLogin = (user) => {
+        setCurrentUser(user); // Guardamos al usuario
+
+        // Redirección inteligente según rol
+        if (user.role === 'admin') {
+            setCurrentPage('admin');
         } else {
-            setSelectedProduct(productId);
-            setCurrentPage('detalle-producto');
+            setCurrentPage('inicio');
         }
     };
-    const handleBlogClick = (blogId) => {
-        console.log('Blog clickeado:', blogId);
-        setSelectedBlog(blogId);
-        setCurrentPage('detalle-blog');
-    };
-    const handleCartToggle = () => {
-        setIsCartOpen(!isCartOpen);
-    };
-    const handleCloseCart = () => {
-        setIsCartOpen(false);
+
+    const handleLogout = () => {
+        setCurrentUser(null); // Borramos usuario
+        setCurrentPage('login'); // Mandamos al login
     };
 
-    const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-
+    // --- RENDERIZADO DE PÁGINAS ---
     const renderPage = () => {
-        console.log('Renderizando página:', currentPage);
-
-        if (currentPage === 'admin') {
-            const token = localStorage.getItem('admin-token');
-            if (!token) {
-                // Si el usuario intenta ir a 'admin' SIN TOKEN,
-                // lo forzamos a la página de 'login'.
-                console.log("Acceso denegado a Admin. Redirigiendo a login.");
-                return <Login onPageChange={handlePageChange} />;
-            }
-            // Si el token SÍ existe, la función continúa
-            // y el switch de abajo mostrará la página de Admin.
-        }
-        
-        if (currentPage === 'detalle-producto' && selectedProduct) {
-            const product = products[selectedProduct];
-            console.log('Mostrando detalle de producto:', product);
+        // Vistas de Detalle
+        if (selectedProduct) {
             return (
                 <ProductDetail
-                    product={product}
+                    product={selectedProduct}
                     onAddToCart={addToCart}
                     onBackClick={() => handlePageChange('productos')}
                 />
             );
         }
-
-        if (currentPage === 'detalle-blog' && selectedBlog) {
-            const blog = blogPosts[selectedBlog];
-            console.log('Mostrando detalle de blog:', blog);
-            return (
-                <BlogDetail
-                    blog={blog}
-                    onBackClick={() => handlePageChange('blogs')}
-                />
-            );
+        if (selectedBlog) {
+            return <BlogDetail blog={selectedBlog} />;
         }
 
+        // Vistas Principales
         switch (currentPage) {
             case 'inicio':
                 return (
                     <Home
-                        products={products}
                         onProductClick={handleProductClick}
                         onAddToCart={addToCart}
+                        onPageChange={handlePageChange}
                     />
                 );
             case 'productos':
                 return (
                     <Products
-                        products={products}
                         onProductClick={handleProductClick}
                         onAddToCart={addToCart}
                     />
                 );
-            case 'nosotros':
-                return <About />;
-            case 'blogs':
-                return (
-                    <Blogs
-                        blogPosts={blogPosts}
-                        onBlogClick={handleBlogClick}
-                    />
-                );
-            case 'contacto':
-                return <Contact />;
+            case 'nosotros': return <About />;
+            case 'blogs': return <Blogs blogPosts={blogPosts} onBlogClick={handleBlogClick} />;
+            case 'contacto': return <Contact />;
+
+            // Pasamos onLogin a Login
             case 'login':
-                return <Login onPageChange={handlePageChange} />;
+                return <Login onPageChange={handlePageChange} onLogin={handleLogin} />;
+
             case 'registro':
                 return <Register onPageChange={handlePageChange} />;
-            
+
+            // Pasamos onLogout a Admin
             case 'admin':
-                return <Admin onPageChange={handlePageChange} />;
+                return <Admin onPageChange={handlePageChange} onLogout={handleLogout} />;
 
             default:
-                return (
-                    <Home
-                        products={products}
-                        onProductClick={handleProductClick}
-                        onAddToCart={addToCart}
-                    />
-                );
+                return <Home onProductClick={handleProductClick} onAddToCart={addToCart} onPageChange={handlePageChange} />;
         }
     };
 
@@ -168,8 +145,10 @@ function App() {
                 onPageChange={handlePageChange}
                 cartCount={cartCount}
                 onCartToggle={handleCartToggle}
+                user={currentUser}   // <--- Pasamos el usuario al Header
+                onLogout={handleLogout} // <--- Pasamos la función de salir
             />
-            
+
             <main>
                 {renderPage()}
             </main>

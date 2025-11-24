@@ -1,109 +1,199 @@
-/* src/styles/Admin.css */
-.admin-panel {
-  display: flex;
-  min-height: 80vh; /* Ajusta según tu layout */
+/* src/styles/Admin.css - TechStore Theme (Blue/White/Yellow) */
+
+/* --- Variables de Color (TechStore) --- */
+:root {
+  --ts-blue-dark: #003366;    /* Azul Oscuro (Sidebar) */
+  --ts-blue-primary: #004cff; /* Azul Vibrante (Botones/Links) */
+  --ts-yellow: #ffc107;       /* Amarillo (Acciones/Highlights) */
+  --ts-white: #ffffff;
+  --ts-gray-bg: #f4f6f9;
 }
 
+/* --- Layout Principal --- */
+.admin-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--ts-gray-bg);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Sidebar (Azul Oscuro) --- */
 .admin-sidebar {
-  width: 240px;
-  background-color: #f4f4f4;
-  padding: 20px;
-  border-right: 1px solid #ddd;
+  width: 260px;
+  background-color: var(--ts-blue-dark); /* CAMBIO: Fondo Azul */
+  color: var(--ts-white);                /* Texto Blanco */
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-sidebar h3 {
-  margin-top: 0;
+  color: var(--ts-yellow); /* Título Amarillo */
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .admin-sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .admin-sidebar li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .admin-sidebar button {
   width: 100%;
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px 15px;
+  background-color: rgba(255, 255, 255, 0.05); /* Transparente sutil */
+  border: none;
+  border-radius: 8px;
   text-align: left;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.2s;
+  color: #ddd;
+  transition: all 0.2s ease;
 }
 
 .admin-sidebar button:hover {
-  background-color: #e9e9e9;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--ts-white);
+  padding-left: 20px; /* Efecto de movimiento */
 }
 
+/* Botón Activo (Amarillo y Azul) */
 .admin-sidebar button.active {
-  background-color: #0d6efd; /* Color de Bootstrap 'primary' */
-  color: white;
-  border-color: #0d6efd;
-}
-
-.admin-content {
-  flex-grow: 1; /* Ocupa el resto del espacio */
-  padding: 20px;
-}
-
-/* Estilos para las tablas (opcional pero recomendado) */
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.admin-table th,
-.admin-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-.admin-table th {
-  background-color: #f2f2f2;
-}
-
-.admin-table img {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-}
-
-.admin-table .actions button {
-  margin-right: 5px;
+  background-color: var(--ts-white);
+  color: var(--ts-blue-dark);
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  border-left: 5px solid var(--ts-yellow);
 }
 
 .btn-danger {
-  background-color: #dc3545;
+  background-color: #dc3545 !important;
+  color: white !important;
+  margin-top: 20px;
+}
+.btn-danger:hover {
+  background-color: #bb2d3b !important;
+}
+
+/* --- Contenido Principal --- */
+.admin-content {
+  flex-grow: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* --- Encabezados --- */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-header h2 {
+  margin: 0;
+  color: var(--ts-blue-dark);
+}
+
+.subtitle {
+  color: #666;
+  margin: 5px 0 0 0;
+}
+
+/* --- Botón "Nuevo Producto" (Azul TechStore) --- */
+.btn-add-product {
+  background-color: var(--ts-blue-primary);
   color: white;
+  padding: 12px 24px;
   border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
+  border-radius: 50px;
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 76, 255, 0.3);
+  transition: transform 0.2s;
 }
 
-.btn-warning {
-  background-color: #ffc107;
-  color: black;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+.btn-add-product:hover {
+  background-color: #0039bd;
+  transform: translateY(-2px);
 }
 
-.btn-primary {
-    background-color: #0d6efd;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 15px;
+/* --- Tablas --- */
+.table-responsive {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  overflow: hidden;
+  border-top: 4px solid var(--ts-blue-primary); /* Detalle azul arriba */
 }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background-color: #f8f9fa;
+  color: var(--ts-blue-dark);
+  font-weight: 700;
+  padding: 15px;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.admin-table td {
+  padding: 15px;
+  border-bottom: 1px solid #f1f1f1;
+  vertical-align: middle;
+  color: #444;
+}
+
+.admin-table tr:hover {
+  background-color: #f0f7ff; /* Azul muy clarito al pasar mouse */
+}
+
+/* --- Badges (Roles) --- */
+.badge-admin {
+  background-color: var(--ts-blue-dark);
+  color: var(--ts-yellow);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.badge-client {
+  background-color: #e9ecef;
+  color: #555;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+/* --- Otros Estilos (Imágenes, Botones acción) --- */
+.img-thumbnail-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+.img-thumbnail-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+.fw-bold { font-weight: 600; color: var(--ts-blue-dark); }
+.price-tag { color: var(--ts-blue-primary); font-weight: bold; }
+.description-truncate { max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #777; }
+.empty-state { text-align: center; padding: 40px !important; color: #999; }
+.action-buttons { display: flex; gap: 8px; }
+
+.btn-icon {
+  width: 35px; height: 35px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.btn-icon.edit { background-color: #e7f1ff; color: var(--ts-blue-primary); }
+.btn-icon.delete { background-color: #ffeaea; color: #dc3545; }

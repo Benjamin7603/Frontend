@@ -2,6 +2,8 @@ import React from 'react';
 import '../../styles/ProductDetail.css';
 
 const ProductDetail = ({ product, onAddToCart, onBackClick }) => {
+
+    // Si no hay producto seleccionado, mostramos error o cargando
     if (!product) {
         return (
             <div className="product-detail">
@@ -18,21 +20,32 @@ const ProductDetail = ({ product, onAddToCart, onBackClick }) => {
 
     return (
         <div className="product-detail">
+            {/* Botón para regresar al catálogo */}
             <button className="back-button" onClick={onBackClick}>
                 ← Volver a Productos
             </button>
-            
+
             <div className="product-detail-content">
                 <div className="product-detail-image">
-                    <img src={product.image} alt={product.name} />
+                    {/* Placeholder por si la imagen viene vacía o rota */}
+                    <img
+                        src={product.image || "https://via.placeholder.com/400"}
+                        alt={product.name}
+                    />
                 </div>
-                
+
                 <div className="product-detail-info">
                     <h1>{product.name}</h1>
-                    <p className="product-detail-description">{product.description}</p>
-                    <div className="product-detail-price">${product.price.toLocaleString()}</div>
-                    
-                    <button 
+
+                    <p className="product-detail-description">
+                        {product.description || "Sin descripción disponible."}
+                    </p>
+
+                    <div className="product-detail-price">
+                        ${product.price?.toLocaleString()}
+                    </div>
+
+                    <button
                         className="add-to-cart-large"
                         onClick={() => onAddToCart(product.id, product.name, product.price)}
                     >
