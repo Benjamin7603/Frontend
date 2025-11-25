@@ -197,3 +197,39 @@
 }
 .btn-icon.edit { background-color: #e7f1ff; color: var(--ts-blue-primary); }
 .btn-icon.delete { background-color: #ffeaea; color: #dc3545; }
+
+/* --- RESPONSIVE ADMIN --- */
+@media (max-width: 768px) {
+  .admin-container {
+    flex-direction: column; /* Sidebar arriba, contenido abajo */
+  }
+
+  .admin-sidebar {
+    width: 100%; /* Ocupa todo el ancho */
+    height: auto;
+    padding: 15px;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .admin-sidebar ul {
+    display: flex; /* Botones uno al lado del otro */
+    overflow-x: auto; /* Scroll horizontal si son muchos */
+    gap: 10px;
+    padding-bottom: 5px;
+  }
+
+  .admin-sidebar li {
+    margin-bottom: 0;
+    min-width: 120px; /* Tamaño mínimo para tocar con el dedo */
+  }
+
+  .admin-content {
+    padding: 15px;
+  }
+
+  /* Tabla responsiva (Scroll horizontal si no cabe) */
+  .table-responsive {
+    overflow-x: auto;
+  }
+}

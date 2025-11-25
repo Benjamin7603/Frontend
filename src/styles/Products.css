@@ -131,17 +131,31 @@
   .products-header h1 {
     font-size: 2rem;
   }
-  
+
   .products-container {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .product-actions {
     flex-direction: column;
   }
-  
+
   .product-image-container {
     height: 200px;
+  }
+}
+
+/* --- RESPONSIVE PRODUCTOS --- */
+@media (max-width: 768px) {
+  .products-container {
+    /* En celular, 1 columna (o 2 pequeñas) */
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    padding: 15px;
+    gap: 20px;
+  }
+
+  .products-hero h1 {
+    font-size: 2rem; /* Texto más pequeño */
   }
 }
