@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import CartPanel from './components/Cart/CartPanel';
@@ -15,21 +15,34 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Admin from './pages/Admin';
 
-// Importar datos locales (si se usan de respaldo)
+// Importar datos
 import { products, blogPosts } from './data/products';
 
+// Importar CSS
 import './styles/App.css';
 
 function App() {
-    // ESTADOS
-    const [currentPage, setCurrentPage] = useState('inicio');
+    // 1. ESTADO DE USUARIO (CON PERSISTENCIA)
+    // Busca en la memoria del navegador si ya hay alguien logueado
+    const [currentUser, setCurrentUser] = useState(() => {
+        const savedUser = localStorage.getItem('techstore_user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
+
+    // 2. ESTADO DE LA PÁGINA
+    // Si es admin, lo manda al panel. Si es cliente, al inicio.
+    const [currentPage, setCurrentPage] = useState(() => {
+        if (localStorage.getItem('techstore_user')) {
+            const user = JSON.parse(localStorage.getItem('techstore_user'));
+            return user.role === 'admin' ? 'admin' : 'inicio';
+        }
+        return 'inicio';
+    });
+
     const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedBlog, setSelectedBlog] = useState(null);
-
-    // ESTADO NUEVO: Usuario Logueado (null = nadie)
-    const [currentUser, setCurrentUser] = useState(null);
 
     // --- FUNCIONES DE CARRITO ---
     const addToCart = (id, name, price) => {
@@ -54,6 +67,7 @@ function App() {
     // --- NAVEGACIÓN ---
     const handlePageChange = (page) => {
         setCurrentPage(page);
+        // Limpiamos selecciones al cambiar de página principal
         if (page !== 'product-detail') setSelectedProduct(null);
         if (page !== 'blog-detail') setSelectedBlog(null);
     };
@@ -68,11 +82,12 @@ function App() {
         setCurrentPage('blog-detail');
     };
 
-    // --- LOGIN / LOGOUT ---
+    // --- LOGIN / LOGOUT (CON PERSISTENCIA) ---
     const handleLogin = (user) => {
-        setCurrentUser(user); // Guardamos al usuario
+        setCurrentUser(user);
+        // Guardamos en el navegador
+        localStorage.setItem('techstore_user', JSON.stringify(user));
 
-        // Redirección inteligente según rol
         if (user.role === 'admin') {
             setCurrentPage('admin');
         } else {
@@ -81,13 +96,15 @@ function App() {
     };
 
     const handleLogout = () => {
-        setCurrentUser(null); // Borramos usuario
-        setCurrentPage('login'); // Mandamos al login
+        setCurrentUser(null);
+        // Borramos del navegador
+        localStorage.removeItem('techstore_user');
+        setCurrentPage('login');
     };
 
     // --- RENDERIZADO DE PÁGINAS ---
     const renderPage = () => {
-        // Vistas de Detalle
+        // VISTA: Detalle de Producto
         if (selectedProduct) {
             return (
                 <ProductDetail
@@ -97,8 +114,15 @@ function App() {
                 />
             );
         }
+
+        // VISTA: Detalle de Blog (AQUÍ ESTÁ EL ARREGLO DEL BOTÓN VOLVER)
         if (selectedBlog) {
-            return <BlogDetail blog={selectedBlog} />;
+            return (
+                <BlogDetail
+                    blog={selectedBlog}
+                    onBackClick={() => handlePageChange('blogs')}
+                />
+            );
         }
 
         // Vistas Principales
@@ -122,14 +146,12 @@ function App() {
             case 'blogs': return <Blogs blogPosts={blogPosts} onBlogClick={handleBlogClick} />;
             case 'contacto': return <Contact />;
 
-            // Pasamos onLogin a Login
             case 'login':
                 return <Login onPageChange={handlePageChange} onLogin={handleLogin} />;
 
             case 'registro':
                 return <Register onPageChange={handlePageChange} />;
 
-            // Pasamos onLogout a Admin
             case 'admin':
                 return <Admin onPageChange={handlePageChange} onLogout={handleLogout} />;
 
@@ -145,8 +167,8 @@ function App() {
                 onPageChange={handlePageChange}
                 cartCount={cartCount}
                 onCartToggle={handleCartToggle}
-                user={currentUser}   // <--- Pasamos el usuario al Header
-                onLogout={handleLogout} // <--- Pasamos la función de salir
+                user={currentUser}
+                onLogout={handleLogout}
             />
 
             <main>

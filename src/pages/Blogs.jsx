@@ -10,20 +10,26 @@ const Blogs = ({ blogPosts, onBlogClick }) => {
             </div>
 
             <div className="blogs-container">
-                {blogPosts.map((blog, index) => (
+                {/* Mapeamos los blogs */}
+                {blogPosts.map((blog) => (
                     <div key={blog.id} className="blog-card">
                         <div className="blog-image">
-                            <img src={blog.image} alt={blog.title} />
+                            {/* Agregamos una imagen de respaldo por si falla la principal */}
+                            <img
+                                src={blog.image || "https://via.placeholder.com/400x300"}
+                                alt={blog.title}
+                            />
                         </div>
-                        
+
                         <div className="blog-content">
                             <h3 className="blog-title">{blog.title}</h3>
                             <p className="blog-excerpt">{blog.excerpt}</p>
                             <p className="blog-date">Publicado: {blog.date}</p>
-                            
-                            <button 
+
+                            <button
                                 className="read-more-btn"
-                                onClick={() => onBlogClick(index)}
+                                // CORRECCIÓN CLAVE: Pasamos 'blog' (el objeto), NO 'index'
+                                onClick={() => onBlogClick(blog)}
                             >
                                 Leer Más
                             </button>

@@ -15,7 +15,8 @@ const About = () => {
             name: "Maria González",
             position: "Directora de Tecnología",
             description: "Ingeniera en Computación con especialización en desarrollo de software y arquitectura de sistemas.",
-            image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face"
+            // CAMBIO: Imagen nueva y segura de Pexels
+            image: "https://images.pexels.com/photos/1181682/pexels-photo-1181682.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             id: 3,
@@ -23,59 +24,21 @@ const About = () => {
             position: "Director de Marketing",
             description: "Especialista en marketing digital y estrategias de crecimiento para empresas tecnológicas.",
             image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face"
-        },
-        {
-            id: 4,
-            name: "Ana López",
-            position: "Jefa de Ventas",
-            description: "Amplia experiencia en ventas B2B y relaciones con clientes en el sector tecnológico.",
-            image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face"
         }
     ];
 
     return (
         <div className="about-page">
             <section className="about-hero">
-                <div className="about-hero-content">
-                    <h1>Sobre Nosotros</h1>
-                    <p>
-                        En TechStore, nos apasiona la tecnología y creemos en su poder para transformar 
-                        vidas. Desde 2020, nos dedicamos a ofrecer los mejores productos tecnológicos 
-                        con un servicio excepcional.
-                    </p>
-                </div>
-            </section>
-
-            <section className="mission-vision">
-                <div className="container">
-                    <div className="mission-vision-grid">
-                        <div className="mission-card">
-                            <h3>Nuestra Misión</h3>
-                            <p>
-                                Hacer la tecnología accesible para todos, ofreciendo productos de calidad 
-                                con el mejor servicio al cliente y precios competitivos.
-                            </p>
-                        </div>
-                        <div className="vision-card">
-                            <h3>Nuestra Visión</h3>
-                            <p>
-                                Ser la tienda de tecnología de referencia en Latinoamérica, reconocida 
-                                por nuestra innovación, calidad y compromiso con los clientes.
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <h1>Sobre Nosotros</h1>
+                <p>Conoce al equipo detrás de TechStore</p>
             </section>
 
             <section className="team-section">
                 <div className="container">
                     <h2>Nuestro Equipo</h2>
-                    <p className="team-subtitle">
-                        Conoce al equipo detrás de TechStore
-                    </p>
-                    
                     <div className="team-grid">
-                        {teamMembers.map(member => (
+                        {teamMembers.map((member) => (
                             <div key={member.id} className="team-card">
                                 <div className="team-image">
                                     <img src={member.image} alt={member.name} />
