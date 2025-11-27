@@ -25,7 +25,8 @@ const Login = ({ onPageChange, onLogin }) => {
       if (userFound) {
         onLogin(userFound); // ¡Éxito! Entra el cliente
       } else {
-        setError('Credenciales incorrectas o usuario no registrado.');
+        // --- CORRECCIÓN AQUÍ: Texto exacto para que el test pase a verde ---
+        setError('Credenciales incorrectas. Intente nuevamente.');
       }
     } catch (err) {
       setError('Error de conexión con el servidor.');
