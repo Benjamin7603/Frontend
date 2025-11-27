@@ -47,9 +47,6 @@ const Home = ({ onProductClick, onAddToCart, onPageChange }) => {
                         // Mantenemos el estilo del container pero avisamos que está vacío
                         <div className="featured-grid" style={{ display: 'block', textAlign: 'center' }}>
                             <p style={{ fontSize: '1.2rem', color: '#666' }}>
-                                ✅ Conectado al Backend exitosamente.
-                                <br />
-                                ⚠️ La lista está vacía. Ve al Admin para agregar productos en la base de datos.
                             </p>
                         </div>
                     ) : (
