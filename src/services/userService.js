@@ -1,45 +1,30 @@
-// Definimos las URLs base
 const BASE_URL = "http://localhost:8080";
-const AUTH_URL = `${BASE_URL}/auth`;       // Para Login
-const USERS_URL = `${BASE_URL}/api/users`; // Para gestión de usuarios (si tienes ese controller)
+const AUTH_URL = `${BASE_URL}/auth`;
+const USERS_URL = `${BASE_URL}/api/users`;
 
-// 1. LOGIN (¡MODIFICADO PARA SEGURIDAD JWT!)
+// 1. LOGIN
 export const loginUser = async (email, password) => {
     try {
-        // Apuntamos al nuevo AuthController (/auth/login)
         const response = await fetch(`${AUTH_URL}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
         });
 
-        if (!response.ok) return null; // Si falla la contraseña
+        if (!response.ok) return null;
 
-        // El Backend devuelve el Token como TEXTO PLANO, no como JSON
         const token = await response.text();
-        
-        // --- PUNTO 5 DE EVALUACIÓN: PERSISTENCIA ---
-        // Guardamos la "llave" en el navegador
         localStorage.setItem("token", token);
         localStorage.setItem("userEmail", email);
 
-        // Retornamos un objeto usuario simulado para que React funcione bien
-        return {
-            email: email,
-            name: email.split('@')[0], // Usamos la parte del correo como nombre
-            role: "cliente", // Por ahora asumimos cliente, luego mejoraremos esto
-            token: token
-        };
-
+        return { email, name: email.split('@')[0], role: "cliente", token };
     } catch (error) {
-        console.error("Error en login:", error);
+        console.error("Error login:", error);
         return null;
     }
 };
 
-// 2. REGISTRAR (Crea usuario en BD)
-// Nota: Si tu backend usa /auth/register, cambia la URL aquí. 
-// Si usas el UserController antiguo, déjalo así.
+// 2. REGISTRAR
 export const registerUser = async (userData) => {
     try {
         const response = await fetch(USERS_URL, {
@@ -47,24 +32,26 @@ export const registerUser = async (userData) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userData),
         });
-        return await response.json();
+
+        if (!response.ok) {
+            console.error("Fallo Backend:", response.status);
+            return null;
+        }
+
+        return await response.json(); 
     } catch (error) {
-        console.error("Error registrando usuario:", error);
+        console.error("Error registro:", error);
         throw error;
     }
 };
 
-// 3. OBTENER TODOS (Necesita Token)
+// 3. OBTENER TODOS
 export const getAllUsers = async () => {
     try {
-        // Recuperamos el token guardado
         const token = localStorage.getItem("token");
-        
         const response = await fetch(USERS_URL, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}` // ¡Enviamos la llave!
-            }
+            headers: { "Authorization": `Bearer ${token}` }
         });
         return await response.json();
     } catch (error) {
@@ -73,14 +60,14 @@ export const getAllUsers = async () => {
     }
 };
 
-// 4. ELIMINAR (Necesita Token)
+// 4. ELIMINAR (¡ESTA ES LA QUE FALTABA!)
 export const deleteUser = async (id) => {
     try {
         const token = localStorage.getItem("token");
         await fetch(`${USERS_URL}/${id}`, { 
             method: "DELETE",
             headers: {
-                "Authorization": `Bearer ${token}` // ¡Enviamos la llave!
+                "Authorization": `Bearer ${token}`
             }
         });
     } catch (error) {
@@ -88,7 +75,7 @@ export const deleteUser = async (id) => {
     }
 };
 
-// EXTRA: Función para cerrar sesión
+// 5. LOGOUT
 export const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userEmail");
